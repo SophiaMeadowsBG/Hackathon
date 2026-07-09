@@ -516,17 +516,18 @@
       .stack {
         display: flex;
         align-items: stretch;
+        gap: 18px;
         flex-wrap: wrap;
         margin-top: 6px;
       }
       .layer {
-        flex: 1 1 210px;
+        flex: 1 1 220px;
+        min-width: 220px;
         background: var(--ink2);
         border: 1px solid var(--lined);
         border-radius: 14px;
         padding: 20px;
         position: relative;
-        margin-right: 34px;
         margin-bottom: 16px;
       }
       .layer:last-child {
@@ -1227,7 +1228,6 @@
               <li>Cooling-load forecast</li>
             </ul>
           </div>
-          </div>
           <div class="layer rv d2">
             <div class="t">Decide</div>
             <h3>MPC optimiser</h3>
@@ -1252,7 +1252,7 @@
           </div>
         </div>
       </section>
-    
+
       <section class="slide" id="s7">
         <div class="eye"><b>07</b>The money</div>
         <h2>
@@ -1269,49 +1269,69 @@
               <div class="seg" style="background: #f2a61b"></div>
             </div>
             <div class="seglab">
-              <span><i style="background: #0f5f88"></i>PCM ~200 kg · £400–800ᵉ</span>
-              <span><i style="background: #4fc1f0"></i>coil + enclosure £200–350ᵉ</span>
+              <span
+                ><i style="background: #0f5f88"></i>PCM ~200 kg ·
+                £400–800ᵉ</span
+              >
+              <span
+                ><i style="background: #4fc1f0"></i>coil + enclosure
+                £200–350ᵉ</span
+              >
               <span><i style="background: #8fd0ee"></i>controls £80–150ᵉ</span>
               <span><i style="background: #f2a61b"></i>install £150–250ᵉ</span>
             </div>
             <div class="vrow">
-              <span>Upfront CAPEX, retrofit</span><span class="v">≈ £850–1,550ᵉ</span>
+              <span>Upfront CAPEX, retrofit</span
+              ><span class="v">≈ £850–1,550ᵉ</span>
             </div>
             <div class="vrow">
-              <span>Peak arbitrage — 3.3 kWh × 23p spread¹</span><span class="v">£25–45 / yr</span>
+              <span>Peak arbitrage — 3.3 kWh × 23p spread¹</span
+              ><span class="v">£25–45 / yr</span>
             </div>
             <div class="vrow">
-              <span>Demand-response events²</span><span class="v">£15–40 / yrᵉ</span>
+              <span>Demand-response events²</span
+              ><span class="v">£15–40 / yrᵉ</span>
             </div>
             <div class="vrow">
-              <span>Night-COP efficiency bonus</span><span class="v">10–20% ↓ energyᵉ</span>
+              <span>Night-COP efficiency bonus</span
+              ><span class="v">10–20% ↓ energyᵉ</span>
             </div>
             <div class="vrow">
-              <span>Compressor life — starts avoided³</span><span class="v">+2–3 yrsᵉ</span>
+              <span>Compressor life — starts avoided³</span
+              ><span class="v">+2–3 yrsᵉ</span>
             </div>
             <div class="honest">
-              Arbitrage alone repays the box in ~15 years. So we don't sell a box.
+              Arbitrage alone repays the box in ~15 years. So we don't sell a
+              box.
             </div>
           </div>
           <div class="col half">
             <div class="tag">Value to Centrica — cooling as a service</div>
             <h3>Top-down, 2050 horizon</h3>
             <div class="funnel" aria-hidden="true">
-              <div class="fstep" style="width: 100%">18M cooled UK homes by 2050⁴</div>
-              <div class="fstep" style="width: 66%">5% captureᵉ → 900k units</div>
+              <div class="fstep" style="width: 100%">
+                18M cooled UK homes by 2050⁴
+              </div>
+              <div class="fstep" style="width: 66%">
+                5% captureᵉ → 900k units
+              </div>
               <div class="fstep" style="width: 42%">£8–12 / mo serviceᵉ</div>
             </div>
             <div class="vrow">
-              <span>Subscription revenue @ 900k units</span><span class="v">£85–130M / yrᵉ</span>
+              <span>Subscription revenue @ 900k units</span
+              ><span class="v">£85–130M / yrᵉ</span>
             </div>
             <div class="vrow">
-              <span>Flexibility sold, per unit per year²</span><span class="v">£30–60ᵉ</span>
+              <span>Flexibility sold, per unit per year²</span
+              ><span class="v">£30–60ᵉ</span>
             </div>
             <div class="vrow">
-              <span>Hardware + install margin</span><span class="v">one-off / unit</span>
+              <span>Hardware + install margin</span
+              ><span class="v">one-off / unit</span>
             </div>
             <div class="vrow">
-              <span>Retention — the tariff follows the cassette</span><span class="v">churn ↓</span>
+              <span>Retention — the tariff follows the cassette</span
+              ><span class="v">churn ↓</span>
             </div>
             <div class="gw">
               900k × ~1 kW ≈ 0.9 GW of dispatchable peak relief
@@ -1319,7 +1339,12 @@
           </div>
         </div>
         <div class="foot">
-          ᵉ engineering estimate — supplier quotes pending · ¹ overnight ≈7p vs peak ≈30p, IOG-class ToU spread, verify live · ² NESO Demand Flexibility Service paid up to ~£3/kWh, winter 2022/23 · ³ inrush 5–8× running current; ~4–5 rated starts/hr; heavy cycling can halve equipment life (Carrier; HVAC service data) · ⁴ EDRC / Univ. of Reading, 2026
+          ᵉ engineering estimate — supplier quotes pending · ¹ overnight ≈7p vs
+          peak ≈30p, IOG-class ToU spread, verify live · ² NESO Demand
+          Flexibility Service paid up to ~£3/kWh, winter 2022/23 · ³ inrush 5–8×
+          running current; ~4–5 rated starts/hr; heavy cycling can halve
+          equipment life (Carrier; HVAC service data) · ⁴ EDRC / Univ. of
+          Reading, 2026
         </div>
         <div class="pageno">7 / 7</div>
       </section>
