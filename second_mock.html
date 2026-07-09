@@ -1,0 +1,2135 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Store cold, not electrons — pitch</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+    <style>
+      :root {
+        --ink: #0a141f;
+        --ink2: #101f30;
+        --ink3: #152941;
+        --line: #22405c;
+        --ice: #4fc1f0;
+        --iced: #0f5f88;
+        --icedeep: #0a2f44;
+        --icep: #bfe5f6;
+        --heat: #f0563e;
+        --amber: #f2a61b;
+        --txt: #eaf3f9;
+        --mut: #8fa9bc;
+        --dim: #5e7a90;
+        --disp: "Sora", sans-serif;
+        --body: "IBM Plex Sans", sans-serif;
+        --mono: "IBM Plex Mono", monospace;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+        background: #05090e;
+      }
+      body {
+        font-family: var(--body);
+        color: var(--txt);
+      }
+      /* ---- fixed 16:9 stage, uniformly scaled ---- */
+      #stage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 1920px;
+        height: 1080px;
+        transform-origin: 0 0;
+        background: var(--ink);
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        visibility: hidden;
+        opacity: 0;
+      }
+      .slide.on {
+        visibility: visible;
+        opacity: 1;
+      }
+      /* ---- shared chrome ---- */
+      .eye {
+        position: absolute;
+        left: 120px;
+        top: 96px;
+        font-family: var(--mono);
+        font-size: 17px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--ice);
+      }
+      .eye b {
+        color: var(--heat);
+        font-weight: 500;
+        margin-right: 14px;
+      }
+      .pageno {
+        position: absolute;
+        right: 120px;
+        bottom: 44px;
+        font-family: var(--mono);
+        font-size: 16px;
+        color: var(--dim);
+      }
+      .foot {
+        position: absolute;
+        left: 120px;
+        bottom: 40px;
+        width: 1500px;
+        font-family: var(--mono);
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: var(--dim);
+      }
+      h1 {
+        font-family: var(--disp);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      h2 {
+        font-family: var(--disp);
+        font-weight: 700;
+        letter-spacing: -0.018em;
+      }
+      .hot {
+        color: var(--heat);
+      }
+      .cold {
+        color: var(--ice);
+      }
+      .amb {
+        color: var(--amber);
+      }
+      .mono {
+        font-family: var(--mono);
+      }
+      #hintbar {
+        position: absolute;
+        left: 120px;
+        bottom: 44px;
+        font-family: var(--mono);
+        font-size: 15px;
+        color: var(--dim);
+      }
+      .kbd {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 2px 10px;
+        color: var(--mut);
+      }
+      /* ---- S1 ---- */
+      #s1 h1 {
+        position: absolute;
+        left: 120px;
+        top: 200px;
+        width: 1040px;
+        font-size: 96px;
+        line-height: 1.06;
+      }
+      #s1 .stats {
+        position: absolute;
+        left: 120px;
+        top: 690px;
+        display: flex;
+        gap: 90px;
+      }
+      #s1 .stat .n {
+        font-family: var(--disp);
+        font-weight: 700;
+        font-size: 74px;
+        letter-spacing: -0.02em;
+      }
+      #s1 .stat .l {
+        font-family: var(--mono);
+        font-size: 16px;
+        color: var(--mut);
+        width: 300px;
+        margin-top: 10px;
+        line-height: 1.55;
+      }
+      #s1 svg.coll {
+        position: absolute;
+        left: 1240px;
+        top: 200px;
+        width: 560px;
+        height: 440px;
+      }
+      #s1 canvas.haze {
+        position: absolute;
+        inset: 0;
+      }
+      /* ---- S2 ---- */
+      #s2 h2 {
+        position: absolute;
+        left: 120px;
+        top: 180px;
+        width: 760px;
+        font-size: 76px;
+        line-height: 1.08;
+      }
+      #s2 .sub {
+        position: absolute;
+        left: 120px;
+        top: 470px;
+        width: 600px;
+        font-size: 26px;
+        line-height: 1.65;
+        color: var(--mut);
+      }
+      #s2 .equate {
+        position: absolute;
+        left: 120px;
+        top: 760px;
+        display: flex;
+        align-items: center;
+        gap: 34px;
+      }
+      #s2 .equate .sym {
+        font-family: var(--disp);
+        font-size: 52px;
+        color: var(--ice);
+      }
+      #s2 svg.pcm {
+        position: absolute;
+        left: 860px;
+        top: 150px;
+        width: 940px;
+        height: 760px;
+      }
+      /* ---- S3 ---- */
+      #s3 {
+        background: radial-gradient(
+          1200px 800px at 62% 52%,
+          #10233a 0%,
+          var(--ink) 70%
+        );
+      }
+      #s3 canvas.gl {
+        position: absolute;
+        inset: 0;
+      }
+      #s3 h2 {
+        position: absolute;
+        left: 120px;
+        top: 158px;
+        width: 840px;
+        font-size: 64px;
+        line-height: 1.1;
+      }
+      #s3 .plabels {
+        position: absolute;
+        left: 120px;
+        top: 430px;
+        width: 470px;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+      }
+      #s3 .pl {
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--ice);
+        background: rgba(16, 31, 48, 0.82);
+        border-radius: 0 12px 12px 0;
+        padding: 16px 20px;
+        opacity: 0;
+      }
+      #s3 .pl .k {
+        font-family: var(--mono);
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        color: var(--ice);
+      }
+      #s3 .pl .v {
+        font-size: 20px;
+        margin-top: 4px;
+        font-weight: 500;
+      }
+      #s3 .flowkey {
+        position: absolute;
+        left: 120px;
+        top: 940px;
+        font-family: var(--mono);
+        font-size: 16px;
+        color: var(--mut);
+        opacity: 0;
+      }
+      #s3 .flowkey i {
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        vertical-align: -1px;
+        margin: 0 8px 0 20px;
+      }
+      /* ---- S4 ---- */
+      #s4 h2 {
+        position: absolute;
+        left: 120px;
+        top: 158px;
+        width: 1100px;
+        font-size: 64px;
+      }
+      #s4 svg.day {
+        position: absolute;
+        left: 120px;
+        top: 280px;
+        width: 1680px;
+        height: 540px;
+      }
+      #s4 .chips {
+        position: absolute;
+        left: 120px;
+        top: 860px;
+        display: flex;
+        gap: 24px;
+      }
+      #s4 .cb {
+        width: 396px;
+        height: 118px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--ink2);
+        position: relative;
+        padding: 16px 22px;
+      }
+      #s4 .cb.big {
+        width: 420px;
+      }
+      #s4 .cb .k {
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+      #s4 .st {
+        position: absolute;
+        left: 22px;
+        top: 52px;
+        font-size: 24px;
+        font-weight: 500;
+        opacity: 0;
+      }
+      #s4 .st.mono {
+        font-family: var(--mono);
+      }
+      /* ---- S5 ---- */
+      #s5 h2 {
+        position: absolute;
+        left: 120px;
+        top: 158px;
+        width: 1100px;
+        font-size: 64px;
+      }
+      #s5 .sub5 {
+        position: absolute;
+        left: 120px;
+        top: 262px;
+        width: 1200px;
+        font-size: 23px;
+        color: var(--mut);
+        line-height: 1.6;
+      }
+      #s5 .days {
+        position: absolute;
+        left: 120px;
+        top: 370px;
+        display: flex;
+        gap: 40px;
+      }
+      #s5 .day {
+        width: 506px;
+        background: var(--ink2);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px 24px 12px;
+      }
+      #s5 .day .t {
+        font-family: var(--mono);
+        font-size: 15px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ice);
+        margin-bottom: 10px;
+      }
+      #s5 .savewrap {
+        position: absolute;
+        left: 120px;
+        top: 672px;
+        width: 1680px;
+        height: 250px;
+        background: var(--ink2);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 20px 28px;
+      }
+      #s5 .badge {
+        position: absolute;
+        left: 120px;
+        top: 940px;
+        font-family: var(--mono);
+        font-size: 16px;
+        border: 1px solid var(--ice);
+        color: var(--ice);
+        border-radius: 24px;
+        padding: 7px 20px;
+      }
+      /* ---- S6 ---- */
+      #s6 h2 {
+        position: absolute;
+        left: 120px;
+        top: 150px;
+        width: 1300px;
+        font-size: 62px;
+      }
+      #s6 .half {
+        position: absolute;
+        top: 255px;
+        width: 816px;
+        height: 650px;
+        border-radius: 18px;
+        padding: 30px 34px;
+        border: 1px solid var(--line);
+      }
+      #s6 .hh {
+        left: 120px;
+        background: var(--ink2);
+      }
+      #s6 .hp2 {
+        left: 984px;
+        background: var(--ink3);
+      }
+      #s6 .tag {
+        font-family: var(--mono);
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--heat);
+      }
+      #s6 h3 {
+        font-family: var(--disp);
+        font-size: 26px;
+        font-weight: 600;
+        margin-top: 6px;
+      }
+      #s6 .capexbar {
+        display: flex;
+        height: 44px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 20px 0 12px;
+        background: #0c1a29;
+      }
+      #s6 .seg {
+        width: 0;
+        height: 100%;
+      }
+      #s6 .seglab {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 26px;
+        font-family: var(--mono);
+        font-size: 14.5px;
+        color: var(--mut);
+        margin-bottom: 14px;
+      }
+      #s6 .seglab i {
+        display: inline-block;
+        width: 13px;
+        height: 13px;
+        border-radius: 4px;
+        margin-right: 8px;
+        vertical-align: -1px;
+      }
+      .vrow {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 11px 0;
+        border-bottom: 1px dashed var(--line);
+        font-size: 19px;
+      }
+      .vrow .v {
+        font-family: var(--mono);
+        font-weight: 500;
+        white-space: nowrap;
+        color: var(--icep);
+      }
+      .honest {
+        margin-top: 16px;
+        border-left: 4px solid var(--heat);
+        padding: 13px 18px;
+        background: rgba(240, 86, 62, 0.12);
+        border-radius: 0 10px 10px 0;
+        font-size: 19px;
+        line-height: 1.5;
+      }
+      #s6 .funnel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin: 18px 0 8px;
+      }
+      #s6 .fstep {
+        background: var(--icedeep);
+        border: 1px solid var(--iced);
+        border-radius: 10px;
+        text-align: center;
+        padding: 12px 0;
+        font-family: var(--mono);
+        font-size: 17px;
+        color: var(--icep);
+        width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      #s6 .gw {
+        font-family: var(--disp);
+        font-weight: 700;
+        font-size: 30px;
+        color: var(--ice);
+        margin-top: 16px;
+      }
+      #s6 .foot {
+        bottom: 30px;
+        font-size: 13.5px;
+      }
+      /* ---- S7 ---- */
+      #s7 h2 {
+        position: absolute;
+        left: 120px;
+        top: 170px;
+        width: 1300px;
+        font-size: 66px;
+      }
+      #s7 .tl {
+        position: absolute;
+        left: 120px;
+        top: 330px;
+        width: 1200px;
+        height: 5px;
+        background: var(--line);
+        border-radius: 3px;
+      }
+      #s7 .tl .fill {
+        width: 0;
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, var(--ice), var(--heat));
+      }
+      #s7 .wks {
+        position: absolute;
+        left: 120px;
+        top: 372px;
+        display: flex;
+        gap: 60px;
+        width: 1200px;
+      }
+      #s7 .wk {
+        width: 570px;
+      }
+      #s7 .wk .t {
+        font-family: var(--mono);
+        font-size: 15px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ice);
+      }
+      #s7 .wk p {
+        font-size: 21px;
+        line-height: 1.65;
+        color: var(--mut);
+        margin-top: 10px;
+      }
+      #s7 .mets {
+        position: absolute;
+        left: 120px;
+        top: 600px;
+        display: flex;
+        gap: 20px;
+      }
+      #s7 .met {
+        width: 405px;
+        border: 1px solid var(--iced);
+        border-radius: 12px;
+        padding: 16px 20px;
+        background: var(--icedeep);
+      }
+      #s7 .met .k {
+        font-family: var(--mono);
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        color: var(--ice);
+        text-transform: uppercase;
+      }
+      #s7 .met .v {
+        font-size: 19px;
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      #s7 .ask {
+        position: absolute;
+        left: 120px;
+        top: 770px;
+        width: 1680px;
+        border: 2px solid var(--heat);
+        border-radius: 14px;
+        padding: 26px 32px;
+        background: rgba(240, 86, 62, 0.08);
+      }
+      #s7 .ask p {
+        font-size: 27px;
+        line-height: 1.55;
+      }
+      #s7 .credit {
+        position: absolute;
+        left: 120px;
+        bottom: 40px;
+        font-family: var(--mono);
+        font-size: 15px;
+        color: var(--dim);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <!-- S1 -->
+      <section class="slide" id="s1">
+        <canvas
+          class="haze"
+          width="1920"
+          height="1080"
+          aria-hidden="true"
+        ></canvas>
+        <div class="eye">
+          <b>01</b>Energised Futures · intern hackathon · Morgan / Meadows /
+          Waheed
+        </div>
+        <h1>
+          Britain is buying cooling
+          <span class="hot">faster than the grid can carry it.</span>
+        </h1>
+        <div class="stats">
+          <div class="stat">
+            <div class="n hot" data-count="320" data-suffix="%">0%</div>
+            <div class="l">surge in AC installation requests, June 2026¹</div>
+          </div>
+          <div class="stat">
+            <div class="n" data-count="5" data-suffix="%">0%</div>
+            <div class="l">
+              of UK homes have AC — half overheat every summer²
+            </div>
+          </div>
+          <div class="stat">
+            <div class="n cold" data-count="18" data-suffix="M">0M</div>
+            <div class="l">homes forecast to be cooled by 2050³</div>
+          </div>
+        </div>
+        <svg
+          class="coll"
+          viewBox="0 0 560 440"
+          role="img"
+          aria-label="Cooling demand and electricity price both peak between 4pm and 7pm"
+        >
+          <rect
+            id="collband"
+            x="360"
+            y="20"
+            width="110"
+            height="360"
+            fill="#F0563E"
+            opacity="0"
+          />
+          <text
+            id="colltxt"
+            x="415"
+            y="46"
+            text-anchor="middle"
+            font-family="IBM Plex Mono"
+            font-size="15"
+            fill="#F0563E"
+            opacity="0"
+          >
+            16–19h
+          </text>
+          <line x1="30" y1="380" x2="540" y2="380" stroke="#22405C" />
+          <text
+            x="30"
+            y="408"
+            font-family="IBM Plex Mono"
+            font-size="13"
+            fill="#5E7A90"
+          >
+            00:00
+          </text>
+          <text
+            x="285"
+            y="408"
+            text-anchor="middle"
+            font-family="IBM Plex Mono"
+            font-size="13"
+            fill="#5E7A90"
+          >
+            12:00
+          </text>
+          <text
+            x="540"
+            y="408"
+            text-anchor="end"
+            font-family="IBM Plex Mono"
+            font-size="13"
+            fill="#5E7A90"
+          >
+            24:00
+          </text>
+          <path
+            id="dem"
+            d="M30,356 C110,362 160,352 220,330 C290,302 340,240 400,160 C420,132 435,116 448,112 C470,106 490,140 515,220 C528,262 536,320 540,348"
+            fill="none"
+            stroke="#F0563E"
+            stroke-width="4.5"
+            stroke-linecap="round"
+          />
+          <path
+            id="pri"
+            d="M30,330 C110,340 170,338 230,326 C300,312 340,300 380,268 C405,244 418,160 440,120 C452,100 462,116 480,180 C505,268 526,316 540,330"
+            fill="none"
+            stroke="#F2A61B"
+            stroke-width="3.5"
+            stroke-dasharray="9 8"
+            stroke-linecap="round"
+          />
+          <text
+            x="30"
+            y="440"
+            font-family="IBM Plex Mono"
+            font-size="13"
+            fill="#5E7A90"
+          >
+            — demand&#160;&#160;&#160;-- price
+          </text>
+        </svg>
+        <div class="foot">
+          ¹ MyBuilder, Jun 2026 · ² Centre for British Progress, 2025 · ³ Energy
+          Demand Research Centre / Univ. of Reading, 2026
+        </div>
+        <div class="pageno">1 / 7</div>
+      </section>
+
+      <!-- S2 -->
+      <section class="slide" id="s2">
+        <div class="eye"><b>02</b>The insight</div>
+        <h2>Store cold, <span class="cold">not electrons.</span></h2>
+        <p class="sub">
+          A material that soaks up a room's heat while it melts — at one
+          constant temperature. Freeze it on cheap night power. Let it melt
+          through the expensive peak.
+        </p>
+        <div class="equate">
+          <svg width="110" height="66" viewBox="0 0 110 66" aria-hidden="true">
+            <rect
+              x="4"
+              y="14"
+              width="88"
+              height="38"
+              rx="8"
+              fill="none"
+              stroke="#EAF3F9"
+              stroke-width="3"
+            />
+            <rect x="92" y="25" width="12" height="16" rx="3" fill="#EAF3F9" />
+            <rect x="12" y="22" width="46" height="22" rx="4" fill="#4FC1F0" />
+          </svg>
+          <span class="sym">=</span>
+          <svg width="88" height="72" viewBox="0 0 88 72" aria-hidden="true">
+            <rect
+              x="6"
+              y="10"
+              width="76"
+              height="52"
+              rx="11"
+              fill="#0A2F44"
+              stroke="#4FC1F0"
+              stroke-width="3"
+            />
+            <path
+              d="M44 22v28M32 29l24 14M56 29L32 43"
+              stroke="#BFE5F6"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <svg
+          class="pcm"
+          viewBox="0 0 940 760"
+          role="img"
+          aria-label="Heat particles flow into a phase-change block while the thermometer beside it stays flat"
+        >
+          <defs>
+            <path id="hp1" d="M40,180 C220,140 360,220 520,268" />
+            <path id="hp2" d="M40,330 C230,318 380,318 520,335" />
+            <path id="hp3" d="M40,490 C220,540 380,450 520,398" />
+          </defs>
+          <path
+            d="M40,180 C220,140 360,220 520,268"
+            fill="none"
+            stroke="#22405C"
+            stroke-width="1"
+            stroke-dasharray="3 7"
+          />
+          <path
+            d="M40,330 C230,318 380,318 520,335"
+            fill="none"
+            stroke="#22405C"
+            stroke-width="1"
+            stroke-dasharray="3 7"
+          />
+          <path
+            d="M40,490 C220,540 380,450 520,398"
+            fill="none"
+            stroke="#22405C"
+            stroke-width="1"
+            stroke-dasharray="3 7"
+          />
+          <text
+            x="40"
+            y="128"
+            font-family="IBM Plex Mono"
+            font-size="19"
+            fill="#F0563E"
+          >
+            heat in →
+          </text>
+          <rect
+            x="520"
+            y="180"
+            width="240"
+            height="300"
+            rx="20"
+            fill="#0A2F44"
+            stroke="#4FC1F0"
+            stroke-width="2.5"
+          />
+          <rect
+            class="slat2"
+            x="548"
+            y="212"
+            width="184"
+            height="36"
+            rx="8"
+            fill="#0F5F88"
+          />
+          <rect
+            class="slat2"
+            x="548"
+            y="262"
+            width="184"
+            height="36"
+            rx="8"
+            fill="#1878AC"
+          />
+          <rect
+            class="slat2"
+            x="548"
+            y="312"
+            width="184"
+            height="36"
+            rx="8"
+            fill="#2E96CC"
+          />
+          <rect
+            class="slat2"
+            x="548"
+            y="362"
+            width="184"
+            height="36"
+            rx="8"
+            fill="#57B4E0"
+          />
+          <rect
+            class="slat2"
+            x="548"
+            y="412"
+            width="184"
+            height="36"
+            rx="8"
+            fill="#8FD0EE"
+          />
+          <text
+            x="640"
+            y="530"
+            text-anchor="middle"
+            font-family="IBM Plex Mono"
+            font-size="19"
+            fill="#8FA9BC"
+          >
+            phase-change material
+          </text>
+          <text
+            x="640"
+            y="562"
+            text-anchor="middle"
+            font-family="IBM Plex Mono"
+            font-size="16.5"
+            fill="#5E7A90"
+          >
+            melting · absorbing heat
+          </text>
+          <circle class="hp" r="9" fill="#F0563E" />
+          <circle class="hp" r="7" fill="#F0563E" />
+          <circle class="hp" r="9" fill="#F2A61B" />
+          <circle class="hp" r="7" fill="#F2A61B" />
+          <circle class="hp" r="8" fill="#F0563E" />
+          <circle class="hp" r="7" fill="#F2A61B" />
+          <g transform="translate(858,190)">
+            <rect
+              x="-13"
+              y="0"
+              width="26"
+              height="230"
+              rx="13"
+              fill="none"
+              stroke="#8FA9BC"
+              stroke-width="2.5"
+            />
+            <circle
+              cx="0"
+              cy="252"
+              r="24"
+              fill="none"
+              stroke="#8FA9BC"
+              stroke-width="2.5"
+            />
+            <circle cx="0" cy="252" r="14" fill="#4FC1F0" />
+            <rect
+              id="merc"
+              x="-6"
+              y="104"
+              width="12"
+              height="140"
+              rx="6"
+              fill="#4FC1F0"
+            />
+            <line
+              x1="20"
+              y1="104"
+              x2="40"
+              y2="104"
+              stroke="#4FC1F0"
+              stroke-width="2.5"
+            />
+          </g>
+          <text
+            x="820"
+            y="160"
+            font-family="IBM Plex Mono"
+            font-size="18"
+            fill="#4FC1F0"
+            text-anchor="middle"
+          >
+            held flat
+          </text>
+        </svg>
+        <div class="foot">
+          Latent heat of fusion — standard thermodynamics · material datasheets:
+          Rubitherm RT-line paraffins, 10–18 °C grades
+        </div>
+        <div class="pageno">2 / 7</div>
+      </section>
+
+      <!-- S3 -->
+      <section class="slide" id="s3">
+        <canvas
+          class="gl"
+          aria-label="3D exploded view of the PCM cassette assembling"
+        ></canvas>
+        <div class="eye"><b>03</b>The hardware</div>
+        <h2>A cassette that retrofits the AC Britain already owns.</h2>
+        <div class="plabels">
+          <div class="pl" id="pl1">
+            <div class="k">01 · Enclosure</div>
+            <div class="v">Sheet metal — workshop-built</div>
+          </div>
+          <div class="pl" id="pl2">
+            <div class="k">02 · Finned PCM slats</div>
+            <div class="v">The cold store</div>
+          </div>
+          <div class="pl" id="pl3">
+            <div class="k">03 · Coil loop</div>
+            <div class="v">Charges it overnight</div>
+          </div>
+          <div class="pl" id="pl4">
+            <div class="k">04 · Fan + diverter</div>
+            <div class="v">Releases it at peak</div>
+          </div>
+        </div>
+        <div class="flowkey" id="flowkey">
+          airflow<i style="background: #f0563e"></i>warm return air<i
+            style="background: #4fc1f0"
+          ></i
+          >cooled supply
+        </div>
+        <div class="foot">
+          Fin-and-tube geometry compensates paraffin's low conductivity (~0.2
+          W/m·K, datasheet) — a fabrication problem, not a research one
+        </div>
+        <div class="pageno">3 / 7</div>
+      </section>
+
+      <!-- S4 -->
+      <section class="slide" id="s4">
+        <div class="eye"><b>04</b>One day, on autopilot</div>
+        <h2>Charge in the dark. Coast through the peak.</h2>
+        <svg
+          class="day"
+          viewBox="0 0 1680 540"
+          role="img"
+          aria-label="A house across one day: the store freezes overnight on cheap power and melts through the evening peak with the compressor off"
+        >
+          <defs>
+            <path id="sunarc" d="M170,430 C480,60 1200,60 1510,430" />
+            <linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1">
+              <stop id="sk1" offset="0" stop-color="#0C2237" />
+              <stop id="sk2" offset="1" stop-color="#0A1826" />
+            </linearGradient>
+          </defs>
+          <rect
+            id="skyrect"
+            x="0"
+            y="0"
+            width="1680"
+            height="440"
+            rx="16"
+            fill="url(#skyg)"
+          />
+          <circle id="sun" r="26" fill="#F2A61B" opacity="0" />
+          <g id="moon" opacity="1">
+            <circle cx="1420" cy="110" r="20" fill="#CFE3F0" />
+            <circle cx="1409" cy="101" r="17" fill="#0C2237" />
+          </g>
+          <rect
+            x="0"
+            y="436"
+            width="1680"
+            height="104"
+            rx="16"
+            fill="#081220"
+          />
+          <path
+            d="M470,438 L470,240 L810,150 L1150,240 L1150,438 Z"
+            fill="#101F30"
+            stroke="#3C5A73"
+            stroke-width="2"
+          />
+          <rect
+            x="520"
+            y="290"
+            width="72"
+            height="72"
+            rx="7"
+            fill="#16324A"
+            stroke="#3C5A73"
+          />
+          <rect
+            x="670"
+            y="290"
+            width="72"
+            height="72"
+            rx="7"
+            fill="#16324A"
+            stroke="#3C5A73"
+          />
+          <g>
+            <rect
+              x="920"
+              y="260"
+              width="180"
+              height="150"
+              rx="14"
+              fill="none"
+              stroke="#8FA9BC"
+              stroke-width="2.5"
+            />
+            <rect
+              class="slat4"
+              x="938"
+              y="278"
+              width="144"
+              height="22"
+              rx="5"
+              fill="#BFE5F6"
+            />
+            <rect
+              class="slat4"
+              x="938"
+              y="308"
+              width="144"
+              height="22"
+              rx="5"
+              fill="#BFE5F6"
+            />
+            <rect
+              class="slat4"
+              x="938"
+              y="338"
+              width="144"
+              height="22"
+              rx="5"
+              fill="#BFE5F6"
+            />
+            <rect
+              class="slat4"
+              x="938"
+              y="368"
+              width="144"
+              height="22"
+              rx="5"
+              fill="#BFE5F6"
+            />
+            <text
+              x="1010"
+              y="432"
+              text-anchor="middle"
+              font-family="IBM Plex Mono"
+              font-size="16"
+              fill="#8FA9BC"
+            >
+              cold store
+            </text>
+          </g>
+          <g>
+            <rect
+              x="1300"
+              y="330"
+              width="130"
+              height="86"
+              rx="10"
+              fill="#101F30"
+              stroke="#3C5A73"
+              stroke-width="2"
+            />
+            <circle
+              cx="1365"
+              cy="373"
+              r="27"
+              fill="none"
+              stroke="#8FA9BC"
+              stroke-width="2.5"
+            />
+            <path
+              d="M1365,350 v46 M1342,373 h46"
+              stroke="#8FA9BC"
+              stroke-width="2"
+            />
+            <circle
+              id="glowring"
+              cx="1365"
+              cy="373"
+              r="38"
+              fill="none"
+              stroke="#4FC1F0"
+              stroke-width="4"
+              opacity="0"
+            />
+            <text
+              x="1365"
+              y="452"
+              text-anchor="middle"
+              font-family="IBM Plex Mono"
+              font-size="16"
+              fill="#8FA9BC"
+            >
+              compressor
+            </text>
+          </g>
+        </svg>
+        <div class="chips">
+          <div class="cb big">
+            <div class="k">phase</div>
+            <span class="st ph-c cold">Charging — freezing the store</span>
+            <span class="st ph-h">Holding — insulated, ready</span>
+            <span class="st ph-d hot">Discharging — melt, fan only</span>
+            <span class="st ph-w">Wind-down</span>
+          </div>
+          <div class="cb">
+            <div class="k">compressor</div>
+            <span class="st ph-c cold">ON · night air, high COP</span>
+            <span class="st ph-h">off</span>
+            <span class="st ph-d hot">OFF through the peak</span>
+            <span class="st ph-w">off</span>
+          </div>
+          <div class="cb">
+            <div class="k">tariff</div>
+            <span class="st mono ph-c cold">≈ 7p / kWh¹</span>
+            <span class="st mono ph-h">≈ 15–25p / kWh</span>
+            <span class="st mono ph-d hot">30p+ — not paid</span>
+            <span class="st mono ph-w">≈ 15p / kWh</span>
+          </div>
+          <div class="cb">
+            <div class="k">clock</div>
+            <span class="st mono ph-c cold">00:00 – 06:00</span>
+            <span class="st mono ph-h">06:00 – 16:00</span>
+            <span class="st mono ph-d hot">16:00 – 19:00</span>
+            <span class="st mono ph-w">19:00 – 24:00</span>
+          </div>
+        </div>
+        <div class="foot">
+          ¹ Illustrative ToU spread (Intelligent Octopus Go-class overnight vs
+          peak — verify live) · night charging also runs the compressor 8–12 °C
+          cooler → higher COP
+        </div>
+        <div class="pageno">4 / 7</div>
+      </section>
+      <!-- S5 -->
+      <section class="slide" id="s5">
+        <div class="eye"><b>05</b>The software</div>
+        <h2>
+          It learns the house. <span class="cold">Savings compound.</span>
+        </h2>
+        <p class="sub5">
+          Weather forecasts + tariff prices + the home's own thermal response →
+          tomorrow's pre-cooling curve, re-planned every half hour.
+        </p>
+        <div class="days">
+          <div class="day">
+            <div class="t">Day 1 · guessing</div>
+            <svg viewBox="0 0 460 180" width="458" aria-hidden="true">
+              <path
+                d="M20,150 C110,126 200,70 290,62 C360,57 420,88 445,112"
+                fill="none"
+                stroke="#4FC1F0"
+                stroke-width="4"
+              />
+              <path
+                class="pred"
+                id="pd1"
+                d="M20,110 C110,152 200,126 290,90 C360,124 420,52 445,70"
+                fill="none"
+                stroke="#F0563E"
+                stroke-width="3"
+                stroke-dasharray="9 8"
+              />
+            </svg>
+          </div>
+          <div class="day">
+            <div class="t">Day 10 · closing in</div>
+            <svg viewBox="0 0 460 180" width="458" aria-hidden="true">
+              <path
+                d="M20,150 C110,126 200,70 290,62 C360,57 420,88 445,112"
+                fill="none"
+                stroke="#4FC1F0"
+                stroke-width="4"
+              />
+              <path
+                class="pred"
+                id="pd2"
+                d="M20,140 C110,132 200,82 290,71 C360,64 420,78 445,100"
+                fill="none"
+                stroke="#F0563E"
+                stroke-width="3"
+                stroke-dasharray="9 8"
+              />
+            </svg>
+          </div>
+          <div class="day">
+            <div class="t">Day 30 · dialled in</div>
+            <svg viewBox="0 0 460 180" width="458" aria-hidden="true">
+              <path
+                d="M20,150 C110,126 200,70 290,62 C360,57 420,88 445,112"
+                fill="none"
+                stroke="#4FC1F0"
+                stroke-width="4"
+              />
+              <path
+                class="pred"
+                id="pd3"
+                d="M20,147 C110,125 200,72 290,63 C360,58 420,86 445,110"
+                fill="none"
+                stroke="#F0563E"
+                stroke-width="3"
+                stroke-dasharray="9 8"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="savewrap">
+          <svg
+            viewBox="0 0 1620 190"
+            width="1620"
+            role="img"
+            aria-label="Cumulative savings curve steepening as predictions improve"
+          >
+            <line x1="30" y1="150" x2="1590" y2="150" stroke="#22405C" />
+            <path
+              id="saveline"
+              d="M30,148 C300,142 560,128 800,104 C1050,78 1320,44 1590,10"
+              fill="none"
+              stroke="#4FC1F0"
+              stroke-width="5"
+              stroke-linecap="round"
+            />
+            <text
+              x="30"
+              y="178"
+              font-family="IBM Plex Mono"
+              font-size="15"
+              fill="#5E7A90"
+            >
+              install
+            </text>
+            <text
+              x="1590"
+              y="178"
+              text-anchor="end"
+              font-family="IBM Plex Mono"
+              font-size="15"
+              fill="#5E7A90"
+            >
+              cumulative £ saved →
+            </text>
+            <text
+              x="1080"
+              y="42"
+              font-family="IBM Plex Mono"
+              font-size="17"
+              fill="#4FC1F0"
+            >
+              better predictions → deeper pre-cooling → steeper savings
+            </text>
+          </svg>
+        </div>
+        <div class="badge">
+          winter mode: the same model pre-heats — one asset, twelve months of
+          work
+        </div>
+        <div class="foot">
+          Solid = actual room thermal response · dashed = model prediction ·
+          grey-box thermal model + load forecast, re-fit continuously on live
+          data
+        </div>
+        <div class="pageno">5 / 7</div>
+      </section>
+
+      <!-- S6 -->
+      <section class="slide" id="s6">
+        <div class="eye"><b>06</b>The money</div>
+        <h2>
+          Thin for a gadget. <span class="cold">Strong as a service.</span>
+        </h2>
+        <div class="half hh">
+          <div class="tag">Value to the household</div>
+          <h3>Per-unit economics</h3>
+          <div class="capexbar" aria-hidden="true">
+            <div class="seg" data-w="47%" style="background: #0f5f88"></div>
+            <div class="seg" data-w="24%" style="background: #4fc1f0"></div>
+            <div class="seg" data-w="11%" style="background: #8fd0ee"></div>
+            <div class="seg" data-w="18%" style="background: #f2a61b"></div>
+          </div>
+          <div class="seglab">
+            <span
+              ><i style="background: #0f5f88"></i>PCM ~200 kg · £400–800ᵉ</span
+            >
+            <span
+              ><i style="background: #4fc1f0"></i>coil + enclosure
+              £200–350ᵉ</span
+            >
+            <span><i style="background: #8fd0ee"></i>controls £80–150ᵉ</span>
+            <span><i style="background: #f2a61b"></i>install £150–250ᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Upfront CAPEX, retrofit</span
+            ><span class="v">≈ £850–1,550ᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Peak arbitrage — 3.3 kWh × 23p spread¹</span
+            ><span class="v">£25–45 / yr</span>
+          </div>
+          <div class="vrow">
+            <span>Demand-response events²</span
+            ><span class="v">£15–40 / yrᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Night-COP efficiency bonus</span
+            ><span class="v">10–20% ↓ energyᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Compressor life — starts avoided³</span
+            ><span class="v">+2–3 yrsᵉ</span>
+          </div>
+          <div class="honest">
+            Arbitrage alone repays the box in ~15 years. So we don't sell a box.
+          </div>
+        </div>
+        <div class="half hp2">
+          <div class="tag">Value to Centrica — cooling as a service</div>
+          <h3>Top-down, 2050 horizon</h3>
+          <div class="funnel" aria-hidden="true">
+            <div class="fstep" data-w="100%">18M cooled UK homes by 2050⁴</div>
+            <div class="fstep" data-w="66%">5% captureᵉ → 900k units</div>
+            <div class="fstep" data-w="42%">£8–12 / mo serviceᵉ</div>
+          </div>
+          <div class="vrow">
+            <span>Subscription revenue @ 900k units</span
+            ><span class="v">£85–130M / yrᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Flexibility sold, per unit per year²</span
+            ><span class="v">£30–60ᵉ</span>
+          </div>
+          <div class="vrow">
+            <span>Hardware + install margin</span
+            ><span class="v">one-off / unit</span>
+          </div>
+          <div class="vrow">
+            <span>Retention — the tariff follows the cassette</span
+            ><span class="v">churn ↓</span>
+          </div>
+          <div class="gw">
+            900k × ~1 kW ≈ 0.9 GW of dispatchable peak relief
+          </div>
+        </div>
+        <div class="foot">
+          ᵉ engineering estimate — supplier quotes pending · ¹ overnight ≈7p vs
+          peak ≈30p, IOG-class ToU spread, verify live · ² NESO Demand
+          Flexibility Service paid up to ~£3/kWh, winter 2022/23 · ³ inrush 5–8×
+          running current; ~4–5 rated starts/hr; heavy cycling can halve
+          equipment life (Carrier; HVAC service data) · ⁴ EDRC / Univ. of
+          Reading, 2026
+        </div>
+        <div class="pageno">6 / 7</div>
+      </section>
+
+      <!-- S7 -->
+      <section class="slide" id="s7">
+        <div class="eye"><b>07</b>Feasibility · the ask</div>
+        <h2>
+          Two weeks. The lab's own workshop.
+          <span class="cold">Real numbers.</span>
+        </h2>
+        <div class="tl"><div class="fill" id="tlfill"></div></div>
+        <div class="wks">
+          <div class="wk">
+            <div class="t">Week 1 · fabricate</div>
+            <p>
+              Sheet-metal enclosure, fin-and-tube PCM stack, off-the-shelf 10–15
+              °C paraffin, sensors + edge controller.
+            </p>
+          </div>
+          <div class="wk">
+            <div class="t">Week 2 · test</div>
+            <p>
+              Retrofit to a split unit in the test space. Replay a real tariff
+              day against a heatwave profile, A/B vs a plain thermostat.
+            </p>
+          </div>
+        </div>
+        <div class="mets">
+          <div class="met">
+            <div class="k">metric 1</div>
+            <div class="v">kWh shifted out of 16:00–19:00</div>
+          </div>
+          <div class="met">
+            <div class="k">metric 2</div>
+            <div class="v">£ per day vs baseline control</div>
+          </div>
+          <div class="met">
+            <div class="k">metric 3</div>
+            <div class="v">Comfort band held</div>
+          </div>
+          <div class="met">
+            <div class="k">metric 4</div>
+            <div class="v">Store round-trip efficiency</div>
+          </div>
+        </div>
+        <div class="ask">
+          <p>
+            Cooling is arriving on its own. The only question is whether
+            Centrica reaches its flexibility first.
+            <b>Adopt this as a lab project — two weeks tells us.</b>
+          </p>
+        </div>
+        <div class="credit">
+          G. Morgan · S. Meadows · R. Waheed — Energised Futures intern
+          hackathon, 2026
+        </div>
+        <div class="pageno">7 / 7</div>
+      </section>
+
+      <div id="hintbar">
+        <span class="kbd">←</span> <span class="kbd">→</span> navigate &nbsp;
+        <span class="kbd">F</span> fullscreen
+      </div>
+    </div>
+    <!-- /stage -->
+    <script type="module">
+      gsap.registerPlugin(MotionPathPlugin);
+      const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const stage = document.getElementById("stage");
+      const slides = [...document.querySelectorAll(".slide")];
+      let cur = 0,
+        busy = false;
+
+      /* ---------- fixed 16:9 stage scaling ---------- */
+      function fit() {
+        const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+        stage.style.transform = `scale(${s}) translate(-50%,-50%)`;
+      }
+      addEventListener("resize", fit);
+      fit();
+
+      /* ---------- helpers ---------- */
+      function drawPrep(sel) {
+        document.querySelectorAll(sel).forEach((p) => {
+          const L = p.getTotalLength();
+          p.style.strokeDasharray = L;
+          p.style.strokeDashoffset = L;
+        });
+      }
+      function drawTo(tl, sel, dur, pos) {
+        tl.to(
+          sel,
+          { strokeDashoffset: 0, duration: dur, ease: "power2.out" },
+          pos,
+        );
+      }
+
+      /* =============== S1 : hook =============== */
+      drawPrep("#dem");
+      drawPrep("#pri");
+      const hazeC = document.querySelector("#s1 .haze"),
+        hz = hazeC.getContext("2d");
+      const P = Array.from({ length: 90 }, () => ({
+        x: Math.random() * 1920,
+        y: Math.random() * 1080,
+        r: 1 + Math.random() * 2.5,
+        v: 0.2 + Math.random() * 0.7,
+        a: 0.04 + Math.random() * 0.1,
+        w: Math.random() * 6.28,
+      }));
+      let hazeOn = false;
+      (function hazeLoop() {
+        requestAnimationFrame(hazeLoop);
+        if (!hazeOn || RM) return;
+        hz.clearRect(0, 0, 1920, 1080);
+        for (const p of P) {
+          p.y -= p.v;
+          p.w += 0.01;
+          p.x += Math.sin(p.w) * 0.3;
+          if (p.y < -10) {
+            p.y = 1090;
+            p.x = Math.random() * 1920;
+          }
+          hz.fillStyle = `rgba(240,86,62,${p.a})`;
+          hz.beginPath();
+          hz.arc(p.x, p.y, p.r, 0, 6.28);
+          hz.fill();
+        }
+      })();
+      function s1Enter() {
+        hazeOn = true;
+        document.querySelectorAll("#s1 [data-count]").forEach((el) => {
+          const t = +el.dataset.count,
+            suf = el.dataset.suffix || "",
+            o = { v: 0 };
+          gsap.to(o, {
+            v: t,
+            duration: 1.4,
+            ease: "power3.out",
+            onUpdate: () => (el.textContent = Math.round(o.v) + suf),
+          });
+        });
+        drawPrep("#dem");
+        drawPrep("#pri");
+        const tl = gsap.timeline();
+        drawTo(tl, "#dem", 1.6, 0.2);
+        drawTo(tl, "#pri", 1.6, 0.55);
+        tl.to("#collband", { opacity: 0.13, duration: 0.6 }, 1.9).to(
+          "#colltxt",
+          { opacity: 1, duration: 0.5 },
+          2.0,
+        );
+        if (RM) tl.progress(1);
+      }
+      function s1Leave() {
+        hazeOn = false;
+      }
+
+      /* =============== S2 : PCM =============== */
+      const hpEls = [...document.querySelectorAll("#s2 .hp")];
+      const s2loops = [];
+      function s2Enter() {
+        hpEls.forEach((el, i) => {
+          const path = "#hp" + ((i % 3) + 1);
+          const tl = gsap.timeline({ repeat: -1, delay: i * 0.55 });
+          tl.set(el, { autoAlpha: 0 })
+            .to(el, { autoAlpha: 1, duration: 0.3 }, 0.05)
+            .to(
+              el,
+              {
+                motionPath: { path, align: path, alignOrigin: [0.5, 0.5] },
+                duration: 3.2,
+                ease: "none",
+              },
+              0,
+            )
+            .to(el, { autoAlpha: 0, duration: 0.35 }, 2.8);
+          s2loops.push(tl);
+        });
+        s2loops.push(
+          gsap.to("#merc", {
+            scaleY: 1.03,
+            transformOrigin: "50% 100%",
+            duration: 1.4,
+            yoyo: true,
+            repeat: -1,
+            ease: "sine.inOut",
+          }),
+        );
+        s2loops.push(
+          gsap.to("#s2 .slat2", {
+            opacity: 0.55,
+            duration: 1.6,
+            yoyo: true,
+            repeat: -1,
+            stagger: 0.25,
+            ease: "sine.inOut",
+          }),
+        );
+        if (RM) {
+          s2loops.forEach((t) => t.pause(0));
+          hpEls.forEach((el) => gsap.set(el, { autoAlpha: 0 }));
+        }
+      }
+      function s2Leave() {
+        while (s2loops.length) s2loops.pop().kill();
+        gsap.set("#s2 .hp", { clearProps: "all", autoAlpha: 0 });
+      }
+
+      /* =============== S3 : Three.js cassette =============== */
+      let THREE = null,
+        three = { ready: false };
+      try {
+        THREE =
+          await import("https://unpkg.com/three@0.158.0/build/three.module.js");
+      } catch (e) {
+        console.warn("three failed to load", e);
+      }
+      if (THREE) {
+        const canvas = document.querySelector("#s3 .gl");
+        const renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: true,
+        });
+        renderer.setSize(1920, 1080, false);
+        renderer.setPixelRatio(1.5);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.15;
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(38, 1920 / 1080, 0.1, 100);
+        cam.position.set(7.6, 4.4, 11.2);
+        cam.lookAt(2.1, -0.1, 0);
+        scene.add(new THREE.HemisphereLight(0xbfe0f2, 0x0a141f, 0.85));
+        const key = new THREE.DirectionalLight(0xffffff, 1.7);
+        key.position.set(6, 9, 7);
+        scene.add(key);
+        const rim = new THREE.DirectionalLight(0x4fc1f0, 1.1);
+        rim.position.set(-7, 3, -5);
+        scene.add(rim);
+        const warm = new THREE.DirectionalLight(0xf0563e, 0.35);
+        warm.position.set(-2, -3, 6);
+        scene.add(warm);
+
+        const metal = new THREE.MeshStandardMaterial({
+          color: 0x93a8b8,
+          metalness: 0.85,
+          roughness: 0.34,
+        });
+        const dark = new THREE.MeshStandardMaterial({
+          color: 0x16324a,
+          metalness: 0.5,
+          roughness: 0.5,
+        });
+        const slatMat = new THREE.MeshStandardMaterial({
+          color: 0x3fb6e8,
+          metalness: 0.15,
+          roughness: 0.24,
+          emissive: 0x0f5f88,
+          emissiveIntensity: 0.35,
+          transparent: true,
+          opacity: 0.95,
+        });
+        const copper = new THREE.MeshStandardMaterial({
+          color: 0xc97e4b,
+          metalness: 0.95,
+          roughness: 0.26,
+        });
+
+        const model = new THREE.Group();
+        model.position.set(2.1, -0.1, 0);
+        scene.add(model);
+        const B = (w, h, d, m) =>
+          new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+
+        const gTop = new THREE.Group(),
+          gSides = new THREE.Group(),
+          gSlats = new THREE.Group(),
+          gCoil = new THREE.Group(),
+          gFan = new THREE.Group();
+        const top = B(4.6, 0.14, 2.6, metal);
+        top.position.y = 1.45;
+        gTop.add(top);
+        const back = B(4.6, 3.0, 0.12, metal);
+        back.position.z = -1.25;
+        gSides.add(back);
+        const sL = B(0.12, 3.0, 2.6, metal);
+        sL.position.x = -2.24;
+        gSides.add(sL);
+        const sR = B(0.12, 3.0, 2.6, metal);
+        sR.position.x = 2.24;
+        gSides.add(sR);
+        for (let i = 0; i < 5; i++) {
+          const s = B(4.0, 0.34, 2.1, slatMat);
+          s.position.y = 1.0 - i * 0.5;
+          gSlats.add(s);
+        }
+        const pts = [];
+        for (let i = 0; i < 9; i++) {
+          pts.push(
+            new THREE.Vector3(-1.9 + i * 0.475, -1.22, i % 2 ? 0.8 : -0.8),
+          );
+        }
+        const coil = new THREE.Mesh(
+          new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 90, 0.07, 10),
+          copper,
+        );
+        gCoil.add(coil);
+        const base = B(4.6, 0.14, 2.6, metal);
+        base.position.y = -1.45;
+        gFan.add(base);
+        const fanHouse = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.55, 0.55, 0.3, 24),
+          dark,
+        );
+        fanHouse.rotation.x = Math.PI / 2;
+        fanHouse.position.set(0.4, -1.85, 0.6);
+        gFan.add(fanHouse);
+        const blades = new THREE.Group();
+        for (let i = 0; i < 3; i++) {
+          const b = B(0.85, 0.1, 0.06, metal);
+          b.rotation.z = (i * Math.PI) / 1.5;
+          blades.add(b);
+        }
+        blades.position.copy(fanHouse.position);
+        blades.rotation.x = Math.PI / 2;
+        gFan.add(blades);
+        const valve = B(0.5, 0.3, 0.3, dark);
+        valve.position.set(-1.2, -1.85, 0.6);
+        gFan.add(valve);
+        const stub = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.06, 0.06, 0.5, 10),
+          copper,
+        );
+        stub.rotation.z = Math.PI / 2;
+        stub.position.set(-1.7, -1.85, 0.6);
+        gFan.add(stub);
+        model.add(gTop, gSides, gSlats, gCoil, gFan);
+
+        const floor = new THREE.Mesh(
+          new THREE.CircleGeometry(16, 48),
+          new THREE.MeshStandardMaterial({
+            color: 0x0c1a29,
+            roughness: 1,
+            metalness: 0,
+          }),
+        );
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = -2.7;
+        scene.add(floor);
+        const grid = new THREE.GridHelper(26, 26, 0x1c3550, 0x12233a);
+        grid.position.y = -2.69;
+        scene.add(grid);
+
+        const EXPLODE = {
+          gTop: 2.4,
+          gSides: 1.2,
+          gSlats: 0,
+          gCoil: -1.35,
+          gFan: -2.4,
+        };
+        const groups = { gTop, gSides, gSlats, gCoil, gFan };
+        function explode() {
+          for (const k in groups) groups[k].position.y = EXPLODE[k];
+        }
+        explode();
+
+        const flows = [];
+        const dotG = new THREE.SphereGeometry(0.075, 10, 10);
+        for (let i = 0; i < 14; i++) {
+          const m = new THREE.Mesh(
+            dotG,
+            new THREE.MeshBasicMaterial({ color: 0xf0563e }),
+          );
+          m.userData = {
+            side: "w",
+            sp: 0.045 + Math.random() * 0.03,
+            y: 1.28 - Math.floor(Math.random() * 5) * 0.5 - 0.25,
+            z: (Math.random() - 0.5) * 1.4,
+          };
+          m.position.set(-7 - Math.random() * 5, m.userData.y, m.userData.z);
+          flows.push(m);
+          model.add(m);
+        }
+        for (let i = 0; i < 14; i++) {
+          const m = new THREE.Mesh(
+            dotG,
+            new THREE.MeshBasicMaterial({ color: 0x4fc1f0 }),
+          );
+          m.userData = {
+            side: "c",
+            sp: 0.045 + Math.random() * 0.03,
+            y: 1.28 - Math.floor(Math.random() * 5) * 0.5 - 0.25,
+            z: (Math.random() - 0.5) * 1.4,
+          };
+          m.position.set(2.4 + Math.random() * 5, m.userData.y, m.userData.z);
+          flows.push(m);
+          model.add(m);
+        }
+        flows.forEach((m) => (m.visible = false));
+
+        three = {
+          ready: true,
+          renderer,
+          scene,
+          cam,
+          model,
+          groups,
+          EXPLODE,
+          explode,
+          flows,
+          blades,
+          slatMat,
+          flow: false,
+          assembled: false,
+        };
+      }
+      let s3Active = false,
+        tPrev = performance.now();
+      (function loop(now) {
+        requestAnimationFrame(loop);
+        const dt = Math.min((now - tPrev) / 1000, 0.05);
+        tPrev = now;
+        if (!three.ready || !s3Active) return;
+        const t = now / 1000;
+        three.model.rotation.y = -0.5 + Math.sin(t * 0.22) * 0.2;
+        three.slatMat.emissiveIntensity = 0.3 + 0.18 * Math.sin(t * 2.1);
+        if (three.assembled) three.blades.rotation.z += dt * 7;
+        if (three.flow) {
+          for (const m of three.flows) {
+            m.visible = true;
+            m.position.x += m.userData.sp;
+            if (m.userData.side === "w" && m.position.x > -2.3)
+              m.position.x = -7 - Math.random() * 4;
+            if (m.userData.side === "c" && m.position.x > 7.5)
+              m.position.x = 2.4 + Math.random() * 2;
+          }
+        } else for (const m of three.flows) m.visible = false;
+        three.renderer.render(three.scene, three.cam);
+      })(tPrev);
+
+      function s3Enter() {
+        s3Active = true;
+        gsap.set("#s3 .pl, #flowkey", { autoAlpha: 0 });
+        if (!three.ready) {
+          gsap.to("#s3 .pl, #flowkey", { autoAlpha: 1, stagger: 0.15 });
+          return;
+        }
+        three.explode();
+        three.flow = false;
+        three.assembled = false;
+        const g = three.groups,
+          tl = gsap.timeline();
+        tl.to("#pl1", { autoAlpha: 1, x: 0, duration: 0.4 }, 0.15)
+          .to(
+            [g.gTop.position, g.gSides.position],
+            { y: 0, duration: 0.95, ease: "power3.inOut" },
+            0.2,
+          )
+          .to("#pl2", { autoAlpha: 1, duration: 0.4 }, 0.85)
+          .to(
+            g.gSlats.position,
+            { y: 0, duration: 0.7, ease: "power3.inOut" },
+            0.9,
+          )
+          .to("#pl3", { autoAlpha: 1, duration: 0.4 }, 1.35)
+          .to(
+            g.gCoil.position,
+            { y: 0, duration: 0.8, ease: "power3.inOut" },
+            1.4,
+          )
+          .to("#pl4", { autoAlpha: 1, duration: 0.4 }, 1.95)
+          .to(
+            g.gFan.position,
+            {
+              y: 0,
+              duration: 0.85,
+              ease: "power3.inOut",
+              onComplete: () => {
+                three.assembled = true;
+                three.flow = true;
+              },
+            },
+            2.0,
+          )
+          .to("#flowkey", { autoAlpha: 1, duration: 0.5 }, 2.9);
+        if (RM) {
+          tl.progress(1);
+          three.assembled = true;
+          three.flow = false;
+        }
+      }
+      function s3Leave() {
+        s3Active = false;
+        if (three.ready) {
+          three.flow = false;
+        }
+      }
+
+      /* =============== S4 : day loop =============== */
+      let dayTL = null;
+      function buildDay() {
+        const tl = gsap.timeline({
+          repeat: -1,
+          paused: true,
+          defaults: { ease: "none" },
+        });
+        tl.to("#sk1", { attr: { "stop-color": "#2E5876" }, duration: 1.4 }, 2.8)
+          .to("#sk1", { attr: { "stop-color": "#5E8CA3" }, duration: 1.6 }, 4.2)
+          .to("#sk1", { attr: { "stop-color": "#C4694A" }, duration: 1.4 }, 9.2)
+          .to(
+            "#sk1",
+            { attr: { "stop-color": "#3A3050" }, duration: 1.2 },
+            10.8,
+          )
+          .to(
+            "#sk1",
+            { attr: { "stop-color": "#0C2237" }, duration: 1.4 },
+            12.2,
+          )
+          .to("#sk2", { attr: { "stop-color": "#123049" }, duration: 1.6 }, 4.2)
+          .to(
+            "#sk2",
+            { attr: { "stop-color": "#0A1826" }, duration: 1.6 },
+            10.8,
+          );
+        tl.to("#sun", { autoAlpha: 1, duration: 0.4 }, 3.0)
+          .to(
+            "#sun",
+            {
+              motionPath: {
+                path: "#sunarc",
+                align: "#sunarc",
+                alignOrigin: [0.5, 0.5],
+              },
+              duration: 8.2,
+            },
+            3.0,
+          )
+          .to("#sun", { autoAlpha: 0, duration: 0.4 }, 10.9);
+        tl.to("#moon", { autoAlpha: 0, duration: 0.6 }, 2.6).to(
+          "#moon",
+          { autoAlpha: 1, duration: 0.7 },
+          12.2,
+        );
+        tl.to(
+          ".slat4",
+          { fill: "#1273A6", duration: 1.2, stagger: 0.12 },
+          0.5,
+        ).to(".slat4", { fill: "#BFE5F6", duration: 1.7, stagger: 0.15 }, 9.2);
+        tl.to("#glowring", { autoAlpha: 0.9, duration: 0.4 }, 0.4)
+          .to(
+            "#glowring",
+            { attr: { r: 46 }, duration: 0.32, repeat: 7, yoyo: true },
+            0.5,
+          )
+          .to("#glowring", { autoAlpha: 0, duration: 0.4 }, 3.2);
+        const ph = {
+          ".ph-c": [0.15, 3.3],
+          ".ph-h": [3.6, 8.9],
+          ".ph-d": [9.1, 11.9],
+          ".ph-w": [12.1, 13.7],
+        };
+        for (const k in ph) {
+          tl.to(k, { autoAlpha: 1, duration: 0.3 }, ph[k][0]).to(
+            k,
+            { autoAlpha: 0, duration: 0.3 },
+            ph[k][1],
+          );
+        }
+        return tl;
+      }
+      function s4Enter() {
+        if (!dayTL) dayTL = buildDay();
+        gsap.set("#s4 .st", { autoAlpha: 0 });
+        if (RM) {
+          dayTL.pause(10);
+          gsap.set(".ph-d", { autoAlpha: 1 });
+        } else dayTL.play(0);
+      }
+      function s4Leave() {
+        if (dayTL) dayTL.pause();
+      }
+
+      /* =============== S5 : learning =============== */
+      function s5Enter() {
+        drawPrep("#pd1");
+        drawPrep("#pd2");
+        drawPrep("#pd3");
+        drawPrep("#saveline");
+        const tl = gsap.timeline();
+        drawTo(tl, "#pd1", 1.0, 0.2);
+        drawTo(tl, "#pd2", 1.0, 0.7);
+        drawTo(tl, "#pd3", 1.0, 1.2);
+        drawTo(tl, "#saveline", 1.8, 1.7);
+        tl.from("#s5 .badge", { autoAlpha: 0, y: 14, duration: 0.5 }, 2.6);
+        if (RM) tl.progress(1);
+      }
+      /* =============== S6 : money =============== */
+      function s6Enter() {
+        const tl = gsap.timeline();
+        tl.to(
+          "#s6 .seg",
+          {
+            width: (i, el) => el.dataset.w,
+            duration: 0.9,
+            ease: "power3.inOut",
+            stagger: 0.16,
+          },
+          0.2,
+        )
+          .to(
+            "#s6 .fstep",
+            {
+              width: (i, el) => el.dataset.w,
+              duration: 0.8,
+              ease: "power3.inOut",
+              stagger: 0.2,
+            },
+            0.4,
+          )
+          .from(
+            "#s6 .vrow",
+            { autoAlpha: 0, y: 12, duration: 0.4, stagger: 0.07 },
+            0.8,
+          )
+          .from(
+            "#s6 .honest, #s6 .gw",
+            { autoAlpha: 0, y: 12, duration: 0.5, stagger: 0.15 },
+            1.6,
+          );
+        if (RM) tl.progress(1);
+      }
+      /* =============== S7 : lab =============== */
+      function s7Enter() {
+        const tl = gsap.timeline();
+        tl.to(
+          "#tlfill",
+          { width: "100%", duration: 1.4, ease: "power2.inOut" },
+          0.2,
+        )
+          .from(
+            "#s7 .wk",
+            { autoAlpha: 0, y: 16, duration: 0.5, stagger: 0.2 },
+            0.4,
+          )
+          .from(
+            "#s7 .met",
+            { autoAlpha: 0, y: 16, duration: 0.4, stagger: 0.12 },
+            1.0,
+          )
+          .from(
+            "#s7 .ask",
+            { autoAlpha: 0, scale: 0.97, duration: 0.6, ease: "back.out(1.4)" },
+            1.6,
+          );
+        if (RM) tl.progress(1);
+      }
+
+      /* ---------- deck engine ---------- */
+      const enter = [
+        s1Enter,
+        s2Enter,
+        s3Enter,
+        s4Enter,
+        s5Enter,
+        s6Enter,
+        s7Enter,
+      ];
+      const leave = [s1Leave, s2Leave, s3Leave, s4Leave, null, null, null];
+      slides.forEach((s, i) => gsap.set(s, { autoAlpha: i === 0 ? 1 : 0 }));
+      function goto(i) {
+        if (busy || i === cur || i < 0 || i >= slides.length) return;
+        busy = true;
+        const oldI = cur;
+        cur = i;
+        if (leave[oldI]) leave[oldI]();
+        gsap.to(slides[oldI], {
+          autoAlpha: 0,
+          duration: 0.32,
+          onComplete: () => {
+            gsap.fromTo(
+              slides[i],
+              { autoAlpha: 0 },
+              {
+                autoAlpha: 1,
+                duration: 0.42,
+                onComplete: () => (busy = false),
+              },
+            );
+            enter[i]();
+          },
+        });
+      }
+      addEventListener("keydown", (e) => {
+        if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+          e.preventDefault();
+          goto(cur + 1);
+        } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+          e.preventDefault();
+          goto(cur - 1);
+        } else if (e.key === "f" || e.key === "F") {
+          document.fullscreenElement
+            ? document.exitFullscreen()
+            : document.documentElement.requestFullscreen();
+        } else if (/^[1-7]$/.test(e.key)) {
+          goto(+e.key - 1);
+        }
+      });
+      addEventListener("click", (e) => {
+        goto(e.clientX > innerWidth / 2 ? cur + 1 : cur - 1);
+      });
+      enter[0]();
+    </script>
+  </body>
+</html>
