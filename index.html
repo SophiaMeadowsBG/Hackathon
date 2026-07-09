@@ -673,6 +673,126 @@
         font-family: var(--mono);
         font-size: 11px;
       }
+      .eye {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ice);
+        margin-bottom: 18px;
+      }
+      .eye b {
+        color: var(--heat);
+        font-weight: 600;
+        margin-right: 10px;
+      }
+      .half {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+      }
+      .tag {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--iced);
+        margin-bottom: 10px;
+      }
+      .capexbar {
+        display: flex;
+        gap: 0;
+        height: 12px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 10px 0 12px;
+      }
+      .capexbar .seg {
+        height: 100%;
+        flex: 1 1 0;
+      }
+      .seglab {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--grey);
+        margin-bottom: 12px;
+      }
+      .seglab i {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        margin-right: 7px;
+        vertical-align: middle;
+      }
+      .vrow {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 15px;
+      }
+      .vrow:last-child {
+        border-bottom: none;
+      }
+      .vrow .v {
+        font-weight: 600;
+        color: var(--iced);
+        text-align: right;
+      }
+      .honest {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-left: 4px solid var(--amber);
+        border-radius: 10px;
+        background: #f7fbfe;
+        color: var(--ink2);
+        line-height: 1.55;
+        font-size: 14px;
+      }
+      .funnel {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 10px 0 12px;
+      }
+      .fstep {
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, var(--iced), var(--ice));
+        color: #fff;
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .gw {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: #f7fbfe;
+        border: 1px solid var(--line);
+        color: var(--ink2);
+        font-size: 14px;
+        line-height: 1.55;
+      }
+      .foot {
+        margin-top: 20px;
+        font-family: var(--mono);
+        font-size: 10.5px;
+        line-height: 1.65;
+        color: var(--grey);
+        max-width: 1100px;
+      }
+      .pageno {
+        margin-top: 18px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--grey);
+      }
       @media (max-width: 760px) {
         section.slide {
           padding: 9vh 6vw;
@@ -1098,30 +1218,17 @@
         <div class="stack">
           <div class="layer rv d1">
             <div class="t">Sense</div>
-            <h3>Instrumentation</h3>
-            <ul>
-              <li>Room temp / RH + occupancy (Zigbee)</li>
-              <li>
-                PCM state-of-charge via probe array + enthalpy balance (temp is
-                flat mid-melt — you must meter energy in/out)
-              </li>
-              <li>CT-clamp power metering</li>
-              <li>Edge MCU · MQTT uplink</li>
-            </ul>
-          </div>
-          <div class="layer rv d2">
-            <div class="t">Predict</div>
             <h3>Forecast models</h3>
             <ul>
-              <li>Day-ahead tariff API (Agile-style)</li>
+              <li>Room temperature</li>
+              <li>Room occupancy</li>
+              <li>Day-ahead tariff API</li>
               <li>Weather forecast ingestion</li>
-              <li>Cooling-load forecast (gradient boosting)</li>
-              <li>
-                Grey-box RC thermal model of the home, identified from live data
-              </li>
+              <li>Cooling-load forecast</li>
             </ul>
           </div>
-          <div class="layer rv d3">
+          </div>
+          <div class="layer rv d2">
             <div class="t">Decide</div>
             <h3>MPC optimiser</h3>
             <ul>
@@ -1133,70 +1240,88 @@
               <li>Falls back to safe thermostat logic offline</li>
             </ul>
           </div>
-          <div class="layer rv d4">
+          <div class="layer rv d3">
             <div class="t">Act & aggregate</div>
             <h3>Control + fleet</h3>
             <ul>
               <li>Compressor, diverter valve, fan control</li>
               <li>Smart-home ecosystem integration</li>
+              <li>24 hour cycle with pre-cooling and pre-heating</li>
               <li>DSR event response (OpenADR-style signals)</li>
-              <li>
-                Fleet: thousands of stores = a dispatchable virtual cooling
-                plant
-              </li>
             </ul>
           </div>
         </div>
       </section>
-      <!-- 7 · VALUE -->
-      <section class="slide" id="value">
-        <div class="eyebrow rv"><span class="idx">07</span>Why it matters</div>
-        <h2 class="rv d1">Small per home. Enormous per fleet.</h2>
+    
+      <section class="slide" id="s7">
+        <div class="eye"><b>07</b>The money</div>
+        <h2>
+          Thin for a gadget. <span class="cold">Strong as a service.</span>
+        </h2>
         <div class="row">
-          <div class="col rv d2">
-            <h3>For the household</h3>
-            <p class="lede" style="margin-bottom: 14px">
-              Shift ~8–10 kWh of cooling out of the peak on a hot day. At a
-              20p+/kWh spread that's roughly £2 a day through a heatwave — and
-              the compressor runs when it's most efficient, so total energy
-              falls too, not just cost.
-            </p>
-            <div class="metrics">
-              <div class="metric">
-                <div class="k">daily peak saving</div>
-                <div class="v">≈ £1.50–2.20 per hot day</div>
-              </div>
-              <div class="metric">
-                <div class="k">comfort</div>
-                <div class="v">
-                  Unchanged — same cool air, different hours of purchase
-                </div>
-              </div>
+          <div class="col half">
+            <div class="tag">Value to the household</div>
+            <h3>Per-unit economics</h3>
+            <div class="capexbar" aria-hidden="true">
+              <div class="seg" style="background: #0f5f88"></div>
+              <div class="seg" style="background: #4fc1f0"></div>
+              <div class="seg" style="background: #8fd0ee"></div>
+              <div class="seg" style="background: #f2a61b"></div>
+            </div>
+            <div class="seglab">
+              <span><i style="background: #0f5f88"></i>PCM ~200 kg · £400–800ᵉ</span>
+              <span><i style="background: #4fc1f0"></i>coil + enclosure £200–350ᵉ</span>
+              <span><i style="background: #8fd0ee"></i>controls £80–150ᵉ</span>
+              <span><i style="background: #f2a61b"></i>install £150–250ᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Upfront CAPEX, retrofit</span><span class="v">≈ £850–1,550ᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Peak arbitrage — 3.3 kWh × 23p spread¹</span><span class="v">£25–45 / yr</span>
+            </div>
+            <div class="vrow">
+              <span>Demand-response events²</span><span class="v">£15–40 / yrᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Night-COP efficiency bonus</span><span class="v">10–20% ↓ energyᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Compressor life — starts avoided³</span><span class="v">+2–3 yrsᵉ</span>
+            </div>
+            <div class="honest">
+              Arbitrage alone repays the box in ~15 years. So we don't sell a box.
             </div>
           </div>
-          <div class="col rv d3">
-            <h3>For the grid — and the business</h3>
-            <p class="lede" style="margin-bottom: 14px">
-              100,000 cassettes each avoiding ~1 kW at peak is ~100 MW of
-              dispatchable demand reduction — a virtual cooling plant, bid into
-              flexibility markets the way PeakSave already aggregates heating.
-              Cooling is the next load; whoever owns its flexibility owns the
-              customer relationship.
-            </p>
-            <div class="metrics">
-              <div class="metric">
-                <div class="k">fleet effect</div>
-                <div class="v">100k homes ≈ 100 MW of peak relief</div>
-              </div>
-              <div class="metric">
-                <div class="k">stacked revenue</div>
-                <div class="v">
-                  Tariff arbitrage + DSR payments + avoided reinforcement
-                </div>
-              </div>
+          <div class="col half">
+            <div class="tag">Value to Centrica — cooling as a service</div>
+            <h3>Top-down, 2050 horizon</h3>
+            <div class="funnel" aria-hidden="true">
+              <div class="fstep" style="width: 100%">18M cooled UK homes by 2050⁴</div>
+              <div class="fstep" style="width: 66%">5% captureᵉ → 900k units</div>
+              <div class="fstep" style="width: 42%">£8–12 / mo serviceᵉ</div>
+            </div>
+            <div class="vrow">
+              <span>Subscription revenue @ 900k units</span><span class="v">£85–130M / yrᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Flexibility sold, per unit per year²</span><span class="v">£30–60ᵉ</span>
+            </div>
+            <div class="vrow">
+              <span>Hardware + install margin</span><span class="v">one-off / unit</span>
+            </div>
+            <div class="vrow">
+              <span>Retention — the tariff follows the cassette</span><span class="v">churn ↓</span>
+            </div>
+            <div class="gw">
+              900k × ~1 kW ≈ 0.9 GW of dispatchable peak relief
             </div>
           </div>
         </div>
+        <div class="foot">
+          ᵉ engineering estimate — supplier quotes pending · ¹ overnight ≈7p vs peak ≈30p, IOG-class ToU spread, verify live · ² NESO Demand Flexibility Service paid up to ~£3/kWh, winter 2022/23 · ³ inrush 5–8× running current; ~4–5 rated starts/hr; heavy cycling can halve equipment life (Carrier; HVAC service data) · ⁴ EDRC / Univ. of Reading, 2026
+        </div>
+        <div class="pageno">7 / 7</div>
       </section>
     </main>
     <script>
